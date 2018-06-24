@@ -1,0 +1,113 @@
+require('util')
+
+-- cFoo=class.create()
+-- 	function cFoo.__init__(self)
+-- 		print('cFoo.__init__')
+-- 	end	
+-- 	function cFoo.test(self)
+-- 		print('cFoo.test')
+-- 	end
+
+-- print('cFoo = ',cFoo)
+-- obj=cFoo()
+
+-- print('obj = ',obj)	
+-------------------------------------------------
+
+--cStudent=require('cStudent')
+--print('cStudent==',cStudent)
+--[[
+mystudent=class.create(cStudent)
+	function mystudent.__init__(self)
+		self.a=3
+	end
+	function mystudent.getName(self, ... )
+		return cStudent.getName(self) .. '  fuck'
+	end
+
+	function mystudent.__gc(self)
+		cStudent.__gc(self)
+		print('__gc',self.a)
+	end
+--]]
+
+-- obj=mystudent()
+-- obj.eee=3
+-- print('obj.a==',obj.a)
+
+-- obj=nil
+-- collectgarbage()
+
+
+--[[
+obj:setName('yeWeilong')
+print('obj:getName()==',obj:getName())
+
+
+print('obj:getAge()=',obj:getAge())
+obj:setAge(234)
+print('obj:getAge()=',obj:getAge())
+--]]
+
+-------------------------------------------
+
+------------------------
+
+--[[
+myCoroutine=class.create()
+	function myCoroutine.__new__(cls, func )
+		return coroutine.create(func)--
+	end
+
+	function myCoroutine.test(self )
+		print('myCoroutine.test')
+	end
+
+	function myCoroutine.resume(self )
+		coroutine.resume(self)
+	end
+
+
+function proc( ... )
+	print('proc')
+end
+
+co=myCoroutine(proc)
+co:test()
+co:resume()
+print('co==',co,type(co))
+co.abc=333
+co.abc=222
+print('cc.abc====>',co.abc)
+--ywlSetMetaTable(co,nil)
+print('cc.abc====>',co.abc)
+--]]
+-----------------------------
+--print('getmetatable(co)=',getmetatable(co))
+--print('myCoroutine=',myCoroutine)
+
+
+
+-----------------------------
+--[[
+
+cMyFunc=class.create()
+	function cMyFunc.__new__(cls)
+		return  nil --function () print('fuuuuuu') end
+	end
+
+	function cMyFunc.test(self)
+		print('cMyFunc.test')
+	end
+
+	function cMyFunc.__call(self)
+		self()
+	end
+
+local obj=cMyFunc()
+obj:test()
+print('obj==',obj )
+--]]
+-----------------------------------
+--require('testRoutine')
+require('promise')
