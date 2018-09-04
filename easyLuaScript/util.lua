@@ -57,6 +57,7 @@ function weakRef(obj, gcFunc)
 	return setmetatable({__obj__=obj},{__mode='v',__call=getFunc4weakRef,__gc=gcFunc})
 end
 
+-------------------------------------------
 local function getFunc4proxy(dProxy,key)
 	if rawget(dProxy,'__obj__')==nil then
 		error('weakly-referenced object no longer exists',1)

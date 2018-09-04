@@ -38,7 +38,7 @@ local c=cApplication
 		for _,sModName in ipairs({'easyLuaLib.network','easyLuaLib.socket','easyLuaLib.service'}) do
 			local loader,sPath=searcher(sModName) --sModName 'easyLuaLib'
 			--print('sPath===',sPath) --类似F:\gitCode\easylua\x64\Debug\easyLuaLib.dll
-			assert(type(loader)=='function',type(loader))
+			assert(type(loader)=='function',string.format('load %s,must be function,not a %s,maybe easyLuaLib.dll not found', sModName, type(loader)))
 			package.preload[sModName]=util.functor(loader,sPath,self.dInterface)
 		end
 	end
@@ -77,16 +77,19 @@ local c=cApplication
 
 	function c.startMyself(self,sServiceName)
 		assert(type(sServiceName)=='string')
-		local asyncWatcher = _elo_.HUB.oLoop:createAsync()
-		local onMessage__ = util.bindMethod(self.onMessage__, self)
-		asyncWatcher:start(onMessage__)
 		local serviceLib=require('easyLuaLib.service')
-		self.thisVm = serviceLib.cThisVM(sServiceName,asyncWatcher)
+
+		local asyncWatcher = _elo_.HUB.oLoop:createAsync()
+		context = serviceLib.cThisVM(sServiceName,asyncWatcher)
+		-- self.cThisVM = context
+		local onMessage__ = util.bindMethod(self.onMessage__, self, context)
+		asyncWatcher:start(onMessage__)
+		return context
 	end --execute
 
-	function c.onMessage__(self) -- 别的service发来的消息
+	function c.onMessage__(self, context) -- 别的service发来的消息
 		while true do -- 因为多次唤醒,会表现为一次真正醒来,所以要while True
-			local sServiceName,iSourceVm,iSession,iMsgType,msg,sz=self.thisVm:getInternalMsgNonBlock()  -- iReqestId,  # 不阻塞
+			local sServiceName,iSourceVm,iSession,iMsgType,msg,sz=context:getInternalMsgNonBlock()  -- iReqestId,  # 不阻塞
 			if nil == sServiceName then --没有消息
 				return
 			end

@@ -468,6 +468,11 @@ local c = ItemWaiter
 	end
 
 --[===[
+需要在 lua 中找到以下3个相关的函数的替代实现
+heapq.heapify
+heapq.heappush
+heapq.heappop
+
 PriorityQueue = class.create(Queue)
 local c = PriorityQueue
 	--[[A subclass of :class:`Queue` that retrieves entries in priority order (lowest first).
@@ -507,7 +512,7 @@ local c = PriorityQueue
 ]===]
 
 
---[==[
+
 LifoQueue = class.create(Queue)
 local c = LifoQueue
 	-- A subclass of :class:`Queue` that retrieves most recently added entries first.
@@ -516,24 +521,27 @@ local c = LifoQueue
         assert(maxsize ~= nil)
         -- items可为nil
 		if items then
-			self.queue = list(items)
+			self.queue =  items -- TODO: 需要对 items 进行浅拷贝. list(items)
 		else
-			self.queue = []
+			self.queue = {}
 		end
 	end
 
 	function c._put(self, item)
-		self.queue.append(item)
+		assert(item ~= nil) --lua 数组中不能有空洞,不能用 nil 来表示 None
+		table.insert(self.queue,item)
 	end
 
 	function c._get(self)
-		return self.queue.pop()
+		v = table.remove(self.queue)
+		return v
 	end
 
 	function c._peek(self)
-		return self.queue[-1]
+		i = #self.queue
+		return self.queue[i]
 	end
-]==]
+--[==[]==]
 
 
 --[====[

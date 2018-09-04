@@ -31,12 +31,12 @@ local c=cApplication
 	end
 
 	function c.execute(self)
-		self:startMyself(_G.SERVICE_NAME)
+		self.context = self:startMyself(_G.SERVICE_NAME)
 		
 		require('manager')
 		_G.lepMgr = manager.cManager()
 
-		self.thisVm:iAmReady()
+		self.context:iAmReady()
 
 		collectgarbage('collect')
 		_elo_.HUB:join()

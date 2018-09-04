@@ -25,13 +25,13 @@ local cApplication=class.create(application.cApplication)
 local c=cApplication
 
 	function c.execute(self)		
-		self:startMyself(_G.SERVICE_NAME)		
+		self.context = self:startMyself(_G.SERVICE_NAME)		
 		--collectgarbage('collect')
 		local serviceLib=require('easyLuaLib.service')
 
 		local function test( ... )
 			local i = 1
-			self.thisVm:iAmReady()
+			self.context:iAmReady()
 			while true do				
 				_eli_:sleep(2)
 				-- msg = string.format("is a fucker msg %d",i)
@@ -47,7 +47,8 @@ local c=cApplication
 				
 				local msg,sz = serviceLib.pack('fuck',1,2,3,{})
 
-				local ret = self.thisVm:sendByServiceName('logService', msg, sz)
+				-- local ret = self.context:sendByServiceName('logService', msg, sz)
+				local ret = self.context:sendByServiceName('mysql_service', msg, sz)
 				serviceLib.trash(msg)
 				msg = nil
 				
